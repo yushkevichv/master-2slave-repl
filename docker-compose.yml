@@ -30,15 +30,18 @@ services:
     depends_on:
       - mysql_master
 
-#  mysqlconfigure:
-#    image: mysql:5.7
-#    container_name: "mysql_configurator"
-#    environment:
-#      - "MYSQL_SLAVE_PASSWORD=root_pwd"
-#      - "MYSQL_MASTER_PASSWORD=root_pwd"
-#      - "MYSQL_ROOT_PASSWORD=root_pwd"
-#      - "MYSQL_REPLICATION_USER=repl_user"
-#      - "MYSQL_REPLICATION_PASSWORD=repl_pwd"
-#    volumes:
-#      - ./build.sh:/tmp/build.sh
-#    command: /bin/bash -x /tmp/build.sh
+  mysql_slave2:
+    image: mysql:5.7
+    container_name: 'mysql_slave2'
+    environment:
+      - MYSQL_DATABASE=test_repl_db
+      - MYSQL_ROOT_PASSWORD=pwd
+      - MYSQL_USER=slave_user
+      - MYSQL_PASSWORD=slave_pwd
+    volumes:
+      - ./slave2/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf
+      - ./slave2/data:/var/lib/mysql
+    ports:
+      - '3306'
+    depends_on:
+      - mysql_master
