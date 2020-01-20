@@ -33,23 +33,23 @@ done
 
 echo "connection to slave2 is ok"
 
-
-docker-ip() {
-    docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$@"
-}
-
 MS_STATUS=`docker exec mysql_master  mysql -uroot -ppwd -e "SHOW MASTER STATUS"`
 CURRENT_LOG=`echo $MS_STATUS | awk '{print $6}'`
 CURRENT_POS=`echo $MS_STATUS | awk '{print $7}'`
 
-start_slave_stmt="CHANGE MASTER TO MASTER_HOST='$(docker-ip mysql_master)',MASTER_USER='slave_user',MASTER_PASSWORD='slave_pwd',MASTER_LOG_FILE='$CURRENT_LOG',MASTER_LOG_POS=$CURRENT_POS; START SLAVE;"
+start_slave_stmt="CHANGE MASTER TO MASTER_HOST='mysql_master',MASTER_USER='slave_user',MASTER_PASSWORD='slave_pwd',MASTER_LOG_FILE='$CURRENT_LOG',MASTER_LOG_POS=$CURRENT_POS; START SLAVE;"
 
 docker exec mysql_slave mysql -uroot -ppwd -e "$start_slave_stmt"
 docker exec mysql_slave mysql -uroot -ppwd -e 'SHOW SLAVE STATUS \G'
 
 echo "and for second slave"
 
-docker exec mysql_slave2 mysql -uroot -ppwd -e "$start_slave_stmt"
+MS_STATUS=`docker exec mysql_master  mysql -uroot -ppwd -e "SHOW MASTER STATUS"`
+CURRENT_LOG=`echo $MS_STATUS | awk '{print $6}'`
+CURRENT_POS=`echo $MS_STATUS | awk '{print $7}'`
+start_slave2_stmt="CHANGE MASTER TO MASTER_HOST='mysql_master',MASTER_USER='slave_user',MASTER_PASSWORD='slave_pwd',MASTER_LOG_FILE='$CURRENT_LOG',MASTER_LOG_POS=$CURRENT_POS; START SLAVE;"
+
+docker exec mysql_slave2 mysql -uroot -ppwd -e "$start_slave2_stmt"
 docker exec mysql_slave2 mysql -uroot -ppwd -e 'SHOW SLAVE STATUS \G'
 
-#CHANGE MASTER TO MASTER_HOST='192.168.192.0',MASTER_USER='slave_user',MASTER_PASSWORD='slave_pwd',MASTER_LOG_FILE='mysql-bin.000003',MASTER_LOG_POS=595; START SLAVE;
+#CHANGE MASTER TO MASTER_HOST='mysql_master',MASTER_USER='slave_user',MASTER_PASSWORD='slave_pwd',MASTER_LOG_FILE='mysql-bin.000003',MASTER_LOG_POS=595; START SLAVE;
