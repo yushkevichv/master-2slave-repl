@@ -84,3 +84,11 @@ services:
       - "mysql_slave2"
     ports:
       - '8082:80'
+
+
+  php:
+    container_name: 'php'
+    build:
+      context: ./php
+    volumes:
+      - ./app:/var/www/html
