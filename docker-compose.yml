@@ -92,3 +92,7 @@ services:
       context: ./php
     volumes:
       - ./app:/var/www/html
+
+  redis:
+    container_name: 'redis'
+    image: redis:latest

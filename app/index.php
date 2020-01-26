@@ -1,4 +1,16 @@
 <?php
+$redis = new Redis();
+
+try {
+    $redis->connect('redis');
+}
+catch (\Exception $e)
+{
+    die($e->getMessage());
+}
+
+$redis->set('counter', 0);
+
 
 $mysqli = new mysqli("mysql_master", "user", "pwd", "test_repl_db");
 if ($mysqli->connect_errno) {
@@ -16,9 +28,13 @@ if (!$stmt->bind_param("i", $id)) {
     echo "Не удалось привязать параметры: (" . $stmt->errno . ") " . $stmt->error;
 }
 
-for ($id = 1; $id < 5; $id++) {
+for ($id = 1; $id <= 10; $id++) {
     if (!$stmt->execute()) {
         echo "Не удалось выполнить запрос: (" . $stmt->errno . ") " . $stmt->error;
+    }
+    else {
+        $redis->incr('counter');
+        continue;
     }
 }
 
@@ -26,5 +42,4 @@ echo "Запрос успешно выполнен \r\n";
 
 $stmt->close();
 
-$res = $mysqli->query("SELECT * FROM test order by id desc limit 3 ");
-var_dump($res->fetch_all());
+var_dump((int) $redis->get('counter'));
