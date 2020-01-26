@@ -45,3 +45,42 @@ services:
       - '3306'
     depends_on:
       - mysql_master
+
+  phpmyadmin_master:
+    image: 'phpmyadmin/phpmyadmin'
+    container_name: 'phpmyadmin_master'
+    environment:
+      - PMA_ARBITRARY=1
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+      - MYSQL_ROOT_PASSWORD=pwd
+    depends_on:
+      - "mysql_master"
+    ports:
+      - '8080:80'
+
+  phpmyadmin_slave1:
+    image: 'phpmyadmin/phpmyadmin'
+    container_name: 'phpmyadmin_slave1'
+    environment:
+      - PMA_ARBITRARY=1
+      - MYSQL_USER=slave_user
+      - MYSQL_PASSWORD=slave_pwd
+      - MYSQL_ROOT_PASSWORD=pwd
+    depends_on:
+      - "mysql_slave"
+    ports:
+      - '8081:80'
+
+  phpmyadmin_slave2:
+    image: 'phpmyadmin/phpmyadmin'
+    container_name: 'phpmyadmin_slave2'
+    environment:
+      - PMA_ARBITRARY=1
+      - MYSQL_USER=slave_user
+      - MYSQL_PASSWORD=slave_pwd
+      - MYSQL_ROOT_PASSWORD=pwd
+    depends_on:
+      - "mysql_slave2"
+    ports:
+      - '8082:80'
