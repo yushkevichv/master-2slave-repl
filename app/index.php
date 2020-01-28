@@ -28,9 +28,10 @@ if (!$stmt->bind_param("i", $id)) {
     echo "Не удалось привязать параметры: (" . $stmt->errno . ") " . $stmt->error;
 }
 
-for ($id = 1; $id <= 10; $id++) {
+for ($id = 1; $id <= 1000000; $id++) {
     if (!$stmt->execute()) {
         echo "Не удалось выполнить запрос: (" . $stmt->errno . ") " . $stmt->error;
+        usleep(100);
     }
     else {
         $redis->incr('counter');
@@ -42,4 +43,4 @@ echo "Запрос успешно выполнен \r\n";
 
 $stmt->close();
 
-var_dump((int) $redis->get('counter'));
+echo "Количество успешно добавленных записей: ". (int) $redis->get('counter') ."\r\n";
