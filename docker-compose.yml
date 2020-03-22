@@ -30,48 +30,48 @@ services:
     depends_on:
       - mysql_master
 
-  mysql_slave2:
-    image: mysql:5.7
-    container_name: 'mysql_slave2'
-    environment:
-      - MYSQL_DATABASE=test_repl_db
-      - MYSQL_ROOT_PASSWORD=pwd
-      - MYSQL_USER=slave_user
-      - MYSQL_PASSWORD=slave_pwd
-    volumes:
-      - ./slave2/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf
-      - ./slave2/data:/var/lib/mysql
-    ports:
-      - '3306'
-    depends_on:
-      - mysql_master
-
-#  phpmyadmin_master:
-#    image: 'phpmyadmin/phpmyadmin'
-#    container_name: 'phpmyadmin_master'
+#  mysql_slave2:
+#    image: mysql:5.7
+#    container_name: 'mysql_slave2'
 #    environment:
-#      - PMA_ARBITRARY=1
-#      - MYSQL_USER=user
-#      - MYSQL_PASSWORD=pwd
+#      - MYSQL_DATABASE=test_repl_db
 #      - MYSQL_ROOT_PASSWORD=pwd
-#    depends_on:
-#      - "mysql_master"
-#    ports:
-#      - '8080:80'
-#
-#  phpmyadmin_slave1:
-#    image: 'phpmyadmin/phpmyadmin'
-#    container_name: 'phpmyadmin_slave1'
-#    environment:
-#      - PMA_ARBITRARY=1
 #      - MYSQL_USER=slave_user
 #      - MYSQL_PASSWORD=slave_pwd
-#      - MYSQL_ROOT_PASSWORD=pwd
-#    depends_on:
-#      - "mysql_slave"
+#    volumes:
+#      - ./slave2/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf
+#      - ./slave2/data:/var/lib/mysql
 #    ports:
-#      - '8081:80'
-#
+#      - '3306'
+#    depends_on:
+#      - mysql_master
+
+  phpmyadmin_master:
+    image: 'phpmyadmin/phpmyadmin'
+    container_name: 'phpmyadmin_master'
+    environment:
+      - PMA_ARBITRARY=1
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+      - MYSQL_ROOT_PASSWORD=pwd
+    depends_on:
+      - "mysql_master"
+    ports:
+      - '8080:80'
+
+  phpmyadmin_slave1:
+    image: 'phpmyadmin/phpmyadmin'
+    container_name: 'phpmyadmin_slave1'
+    environment:
+      - PMA_ARBITRARY=1
+      - MYSQL_USER=slave_user
+      - MYSQL_PASSWORD=slave_pwd
+      - MYSQL_ROOT_PASSWORD=pwd
+    depends_on:
+      - "mysql_slave"
+    ports:
+      - '8081:80'
+
 #  phpmyadmin_slave2:
 #    image: 'phpmyadmin/phpmyadmin'
 #    container_name: 'phpmyadmin_slave2'
@@ -96,3 +96,9 @@ services:
   redis:
     container_name: 'redis'
     image: redis:latest
+
+  tarantool:
+    container_name: 'tarantool'
+    image: tarantool/tarantool:latest
+    ports:
+      - '3301:3301'
