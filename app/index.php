@@ -3,6 +3,12 @@ require_once 'vendor/autoload.php';
 
 $faker = Faker\Factory::create('ru_RU');
 
+//use Tarantool\Client\Client;
+//
+//$client = Client::fromDsn('tcp://tarantool:3301');;
+//
+//$space = $client->getSpace('repl_users');
+
 
 //$redis = new Redis();
 //
@@ -33,14 +39,16 @@ if (!($stmt = $mysqli->prepare("INSERT INTO users(id, name) VALUES (null, ?)")))
 //    echo "Не удалось привязать параметры: (" . $stmt->errno . ") " . $stmt->error;
 //}
 
-for ($id = 1; $id <= 10000; $id++) {
-    if (!$stmt->bind_param("s", $faker->name)) {
+for ($id = 1; $id <= 1000000; $id++) {
+    $name = $faker->name;
+    if (!$stmt->bind_param("s", $name)) {
         echo "Не удалось привязать параметры: (" . $stmt->errno . ") " . $stmt->error;
     }
     if (!$stmt->execute()) {
         echo "Не удалось выполнить запрос: (" . $stmt->errno . ") " . $stmt->error;
 //        usleep(100);
     }
+//    $space->insert([null, $name]);
 //    else {
 //        $redis->incr('counter');
 //        continue;
